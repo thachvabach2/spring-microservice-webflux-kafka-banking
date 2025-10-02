@@ -8,3 +8,9 @@ spring:
         url: r2dbc:pool:mysql://localhost:3307/profiledb
         username: root
         password:
+    liquibase:
+        url: jdbc:mysql://localhost:3307/profiledb
+        enabled: true
+        user: root
+        password:
+        change-log: classpath:db/changelog/changelog-master.xml
