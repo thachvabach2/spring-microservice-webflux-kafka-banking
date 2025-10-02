@@ -1,0 +1,10 @@
+server:
+  port: 9214
+
+spring:
+    application:
+        name: profile-service
+    r2dbc:
+        url: r2dbc:pool:mysql://localhost:3307/profiledb
+        username: root
+        password:

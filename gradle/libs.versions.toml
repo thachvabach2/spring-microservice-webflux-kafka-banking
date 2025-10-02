@@ -1,0 +1,12 @@
+# gradle/libs.versions.toml
+[versions]
+spring-boot = "3.5.5"
+spring-cloud = "2025.0.0"
+dependency-management = "1.1.7"
+
+[libraries]
+spring-cloud-dependencies = { module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "spring-cloud" }
+
+[plugins]
+springBoot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+springDependencyManagement = { id = "io.spring.dependency-management", version.ref = "dependency-management" }
