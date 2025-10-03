@@ -1,5 +1,7 @@
 package vn.bachdao.commonservice.advice;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import vn.bachdao.commonservice.errors.CommonException;
 import vn.bachdao.commonservice.errors.ErrorMessage;
+import vn.bachdao.commonservice.errors.ValidateException;
 
 @ControllerAdvice
 @Slf4j
@@ -27,5 +30,10 @@ public class ExceptionAdvice {
         log.error(String.format("Common error: %s %s %s", ex.getCode(), ex.getStatus(), ex.getMessage()));
         return ResponseEntity.status(ex.getStatus())
                 .body(new ErrorMessage(ex.getCode(), ex.getMessage(), ex.getStatus()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleValidateException(ValidateException ex) {
+        return ResponseEntity.status(ex.getStatus()).body(ex.getMessageMap());
     }
 }
