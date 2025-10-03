@@ -3,8 +3,10 @@ package vn.bachdao.commonservice.errors;
 import org.springframework.http.HttpStatus;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class CommonException extends RuntimeException {
 
     private final String code;

@@ -5,8 +5,10 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class ValidateException extends RuntimeException {
     private final String code;
     private final Map<String, String> messageMap;
