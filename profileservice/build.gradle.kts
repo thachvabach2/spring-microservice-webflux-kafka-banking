@@ -1,6 +1,7 @@
 extra["springCloudVersion"] = libs.versions.spring.cloud.get()
 
 dependencies {
+    implementation(project(":commonservice"))
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.liquibase:liquibase-core")
