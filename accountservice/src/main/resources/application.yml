@@ -1,0 +1,19 @@
+server:
+  port: 9211
+
+spring:
+    application:
+        name: account-service
+    r2dbc:
+        url: r2dbc:pool:mysql://localhost:3307/accountdb
+        username: root
+        password:
+    liquibase:
+        url: jdbc:mysql://localhost:3307/accountdb
+        enabled: true
+        user: root
+        password:
+        change-log: classpath:db/changelog/changelog-master.xml
+
+    # kafka:
+    #     bootstrap-servers: localhost:9092
