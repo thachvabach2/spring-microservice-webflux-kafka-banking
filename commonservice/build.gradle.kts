@@ -5,6 +5,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("io.projectreactor.kafka:reactor-kafka:1.3.24")
     api("com.networknt:json-schema-validator:1.5.9")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

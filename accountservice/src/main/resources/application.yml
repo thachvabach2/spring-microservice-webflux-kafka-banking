@@ -14,6 +14,14 @@ spring:
         user: root
         password:
         change-log: classpath:db/changelog/changelog-master.xml
-
-    # kafka:
-    #     bootstrap-servers: localhost:9092
+    kafka:
+        producer:
+            retries: 3
+            batch-size: 16384
+            buffer-memory: 33554432
+kafka:
+    bootstrap:
+        servers: localhost:9092
+payment:
+    kafka:
+        consumer-group-id: accountService1-groupId
