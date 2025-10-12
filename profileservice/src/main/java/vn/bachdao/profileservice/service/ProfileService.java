@@ -3,6 +3,7 @@ package vn.bachdao.profileservice.service;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 import vn.bachdao.profileservice.domain.dto.ProfileDTO;
 import vn.bachdao.profileservice.event.EventProducer;
 import vn.bachdao.profileservice.repository.ProfileRepository;
+import vn.bachdao.commonservice.errors.CommonException;
 import vn.bachdao.commonservice.utils.Constant;
 
 @Service
@@ -71,5 +73,22 @@ public class ProfileService {
                         }
                     }
                 });
+    }
+
+    public Mono<ProfileDTO> updateStatusProfile(ProfileDTO profileDTO) {
+        return this.getDetailProfileByEmail(profileDTO.getEmail())
+                .map(ProfileDTO::dtoToEntity)
+                .flatMap(profile -> {
+                    profile.setStatus(profileDTO.getStatus());
+                    return this.profileRepository.save(profile);
+                })
+                .map(ProfileDTO::entityToDto)
+                .doOnError(throwable -> log.error(throwable.getMessage()));
+    }
+
+    public Mono<ProfileDTO> getDetailProfileByEmail(String email) {
+        return this.profileRepository.findByEmail(email)
+                .map(ProfileDTO::entityToDto)
+                .switchIfEmpty(Mono.error(new CommonException("PF03", "Profile not found", HttpStatus.NOT_FOUND)));
     }
 }

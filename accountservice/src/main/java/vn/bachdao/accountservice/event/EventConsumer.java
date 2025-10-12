@@ -27,6 +27,9 @@ public class EventConsumer {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     public EventConsumer(ReceiverOptions<String, String> receiverOptions) {
         KafkaReceiver.create(receiverOptions.subscription(Collections.singleton(Constant.PROFILE_ONBOARDING_TOPIC)))
                 .receive().subscribe(t -> {
@@ -51,6 +54,15 @@ public class EventConsumer {
         accountDTO.setCurrency("USD");
 
         this.accountService.createNewAccount(accountDTO)
-                .subscribe();
+                .subscribe(res -> {
+                    dto.setStatus(Constant.STATUS_PROFILE_ACTIVE);
+                    try {
+                        this.eventProducer.send(Constant.PROFILE_ONBOARDED_TOPIC,
+                                this.objectMapper.writeValueAsString(dto)).subscribe();
+                    } catch (JsonProcessingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                });
     }
 }
