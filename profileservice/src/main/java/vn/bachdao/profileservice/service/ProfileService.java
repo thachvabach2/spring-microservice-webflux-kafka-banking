@@ -1,21 +1,33 @@
 package vn.bachdao.profileservice.service;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import vn.bachdao.profileservice.domain.dto.ProfileDTO;
+import vn.bachdao.profileservice.event.EventProducer;
 import vn.bachdao.profileservice.repository.ProfileRepository;
-import vn.bachdao.profileservice.utils.Constant;
+import vn.bachdao.commonservice.utils.Constant;
 
 @Service
 @Slf4j
 public class ProfileService {
 
     @Autowired
+    private EventProducer eventProducer;
+
+    @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public Flux<ProfileDTO> getAllProfile() {
         return this.profileRepository.findAll()
@@ -47,8 +59,17 @@ public class ProfileService {
                 .flatMap(profile -> this.profileRepository.save(profile))
                 .map(ProfileDTO::entityToDto)
                 .doOnError(throwable -> log.error(throwable.getMessage()))
-                .doOnSuccess(profileDTO1 -> {
-
+                .doOnSuccess(dto -> {
+                    if (Objects.equals(dto.getStatus(), Constant.STATUS_PROFILE_PENDING)) {
+                        dto.setInitialBalance(profileDTO.getInitialBalance());
+                        try {
+                            this.eventProducer.send(Constant.PROFILE_ONBOARDING_TOPIC,
+                                    objectMapper.writeValueAsString(profileDTO)).subscribe();
+                        } catch (JsonProcessingException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
                 });
     }
 }
