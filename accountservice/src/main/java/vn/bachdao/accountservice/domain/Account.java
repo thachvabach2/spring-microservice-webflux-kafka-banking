@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 public class Account {
 
     @Id
-    private long id;
+    private String id;
 
     private String email;
-    private String name;
-    private String status;
-    private String role;
+    private String currency;
+    private double balance;
+    private double reserved;
 }
